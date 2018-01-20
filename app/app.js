@@ -21,6 +21,8 @@ app.use(jwt({ secret: config.secret}).unless({path: ['/user/login', '/user/regis
 
 app.use('/user', require('./routes/user'))
 
+app.use('/challenge', require('./routes/challenge'))
+
 app.use((req, res) => {
   res.end('hello world');
 })
