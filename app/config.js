@@ -7,6 +7,9 @@ module.exports = {
   twilioSid: 'AC6ea33a67a87050af813e34b0ab86a88f',
   twilioToken: 'd1f54e0709268537b0bcda6140b221f6',
   twilioPhone: '+14159434842',
+
+  oneSignalId: 'b753c22f-a746-43d0-b605-5558b92c6397',
+  oneSignalSecret: 'MmU2NGU4MGYtNWVlMy00YWMxLWFkODMtZmVlMDQ3OWQwNzdk',
   // Challenge acceptant status
   ACCEPT: 1,
   DOING: 2,

@@ -1,8 +1,9 @@
 const CronJob = require('cron').CronJob;
 const knex = require('../db');
 const config = require('../config');
+const notif = require('../notif');
 
-module.exports = new CronJob('*/5 * * * *', function() {
+module.exports = new CronJob('*/1 * * * *', function() {
   
   console.log('Run every 5 min');
   // Change status from NEW to READY if we got enough member
@@ -13,9 +14,29 @@ module.exports = new CronJob('*/5 * * * *', function() {
       challenges.forEach(challenge => {
         if (challenge.total_member === challenge.require_user) {
           // READY
-          return knex.table('challenges')
+          knex.table('challenges')
             .where({ id: challenge.id })
             .update({ status: config.READY })
+            .then(data => console.log(data))
+          knex.table('challengesacceptant')
+            .select('oneSignal')
+            .join('users', 'users.id', 'challengesacceptant.user_id')
+            .where({ challenge_id: challenge.id})
+            .then(users => {
+              console.log(users);
+              const IDs = users.filter(user => user.oneSignal.length > 0).map(user => user.oneSignal)
+              console.log(IDs);
+              if (IDs.length > 0) {
+                notif.createNotification({
+                  contents: {
+                    contents: `${challenge.name} đã đủ số người tham dự. Sẵn sàng để chinh phục thử thách nhé!`
+                  },
+                  specific: {
+                    include_player_ids: IDs
+                  },
+                })
+              }
+            })
         }
         return false;
       });
@@ -34,7 +55,29 @@ module.exports = new CronJob('*/5 * * * *', function() {
     .where('start_time', '<', new Date())
     .andWhere({ status: config.NEW })
     .then(challenges => {
+      console.log(challenges)
       // Todo: Send notification that challenge fail
+      challenges.forEach(challenge => {
+        knex.table('challengesacceptant')
+        .select('oneSignal')
+        .join('users', 'users.id', 'challengesacceptant.user_id')
+        .where({ challenge_id: challenge.id})
+        .then(users => {
+          console.log(users);
+          const IDs = users.filter(user => user.oneSignal.length > 0).map(user => user.oneSignal)
+          console.log(IDs);
+          if (IDs.length > 0) {
+            notif.createNotification({
+              contents: {
+                contents: `Challenge ${challenge.name} không đủ số người tham dự nên đã bị huỷ!`
+              },
+              specific: {
+                include_player_ids: IDs
+              },
+            })
+          }
+        })
+      })
     })
     .catch(err => console.log(err));
 
@@ -48,21 +91,65 @@ module.exports = new CronJob('*/5 * * * *', function() {
       challenges.forEach(challenge => {
         if (challenge.total_member === challenge.require_user) {
           // SUCCESS
-          return Promise.all([
+          Promise.all([
             knex.table('challenges')
               .where({ id: challenge.id })
               .update({ status: config.SUCCESS }),
             knex.table('users')
               .update(knex.raw('point = point + ' + challenge.point ))
               .where(knex.raw('users.id IN (SELECT user_id FROM challengesacceptant WHERE challenge_id = '+ challenge.id +')'))
-          ])
+          ]).then(data => console.log(data))
           // Todo: Send notification
+          challenges.forEach(challenge => {
+            knex.table('challengesacceptant')
+            .select('oneSignal')
+            .join('users', 'users.id', 'challengesacceptant.user_id')
+            .where({ challenge_id: challenge.id})
+            .then(users => {
+              console.log(users);
+              const IDs = users.filter(user => user.oneSignal.length > 0).map(user => user.oneSignal)
+              console.log(IDs);
+              if (IDs.length > 0) {
+                notif.createNotification({
+                  contents: {
+                    contents: `Chúc mừng! Challenge ${challenge.name} đã hoàn thành, cùng nhận giải nhé`
+                  },
+                  specific: {
+                    include_player_ids: IDs
+                  },
+                })
+              }
+            })
+          })
 
         } else {
           // FAIL
-          return knex.table('challenges')
+          knex.table('challenges')
             .where({ id: challenge.id })
             .update({ status: config.FAIL })
+            .then(data => console.log(data))
+          // Todo: Send notification
+          challenges.forEach(challenge => {
+            knex.table('challengesacceptant')
+            .select('oneSignal')
+            .join('users', 'users.id', 'challengesacceptant.user_id')
+            .where({ challenge_id: challenge.id})
+            .then(users => {
+              console.log(users);
+              const IDs = users.filter(user => user.oneSignal.length > 0).map(user => user.oneSignal)
+              console.log(IDs);
+              if (IDs.length > 0) {
+                notif.createNotification({
+                  contents: {
+                    contents: `Challenge ${challenge.name} đã thất bại. Nhớ dặn dò team của bạn tham gia đầy đủ ở challenge sau nhé!`
+                  },
+                  specific: {
+                    include_player_ids: IDs
+                  },
+                })
+              }
+            })
+          })
         }
       });
     }).then(data => {

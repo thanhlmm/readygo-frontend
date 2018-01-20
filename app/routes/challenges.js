@@ -101,7 +101,8 @@ router.post('/:id/rewards', auth.privated, (req, res) => {
   newReward.challenge_id = id;
   knex.table('rewards')
     .insert(newReward)
-    .then(data => res.json(data), (err) => res.status(442).json(err));
+    .then(data => res.json(data))
+    .catch((err) => res.status(442).json(err));
 });
 
 
