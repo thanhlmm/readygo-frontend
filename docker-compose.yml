@@ -1,0 +1,32 @@
+version: "2"
+
+services:
+  db:
+    env_file:
+      - .env
+    image: mysql
+    volumes:
+      - ./db/mysql:/var/lib/mysql
+        
+  adminer:
+    image: adminer
+    links:
+      - db
+    ports:
+      - 8080:8080
+
+  proxy:
+    image: nginx:1.13-alpine
+    restart: always
+    volumes:
+      - ./conf/nginx/dev.conf:/etc/nginx/nginx.conf:ro
+    links:
+      - mailhog
+    ports:
+      - "9180:80"
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
