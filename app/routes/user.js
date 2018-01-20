@@ -50,6 +50,13 @@ router.get('/', (req, res) => {
 	);
 });
 
+router.get('/me', auth.privated, (req, res) => {
+	const user = req.user;
+	knex.table('Users')
+		.where_=({ id: user.id })
+		.then(data => res.json(data[0]), (err) => res.json(err));
+})
+
 router.get('/myChallenges', auth.privated, (req, res) => {
 	const user = req.user;
 	knex.table('ChallengeAcceptant').where({sdt: user.sdt }).then(
