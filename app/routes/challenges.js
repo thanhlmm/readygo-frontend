@@ -48,6 +48,27 @@ router.get('/:id/member', auth.privated, (req, res) => {
     .then(data => res.json(data), (err) => res.json(err));
 });
 
+router.get('/:id/rewards', auth.privated, (req, res) => {
+  const id = req.params.id;
+  const user = req.user;
+
+  knex.table('Rewards')
+    .where({ 'challenge_id': id })
+    .then(data => res.json(data), (err) => res.json(err));
+});
+
+router.post('/:id/rewards', auth.privated, (req, res) => {
+  const id = req.params.id;
+  const user = req.user;
+
+  const newReward = req.body;
+  newReward.challenge_id = id;
+  knex.table('Rewards')
+    .insert(newReward)
+    .then(data => res.json(data), (err) => res.json(err));
+});
+
+
 router.post('/:id/status', auth.privated, (req, res) => {
   const id = req.params.id;
   const user = req.user;
