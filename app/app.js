@@ -26,9 +26,9 @@ app.use((req, res) => {
   res.end('hello world');
 })
 
-app.listen(3600, (err) => {
+app.listen(400, (err) => {
   if (err) console.log(err)
-  console.log('Your sever is up at 3600');
+  console.log('Your sever is up at 400');
 })
 
 module.exports = app
