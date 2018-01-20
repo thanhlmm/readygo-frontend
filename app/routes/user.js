@@ -56,7 +56,7 @@ router.get('/', (req, res) => {
 router.get('/me', auth.privated, (req, res) => {
 	const user = req.user;
 	knex.table('users')
-		.where_=({ id: user.id })
+		.where({ id: user.id })
 		.then(data => res.json(data[0]), (err) => res.json(err));
 })
 
