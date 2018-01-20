@@ -13,7 +13,7 @@ router.get('/', auth.privated, (req, res) => {
     .then(data => {
       res.json(data[0]);
     }, (err) => {
-      res.json(err)
+      res.status(442).json(err)
     });
 
 });

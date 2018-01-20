@@ -42,7 +42,7 @@ router.get('/', (req, res) => {
 			res.json(data);
 		},
 		(err) => {
-			res.json(err);
+			res.status(442).json(err);
 		}
 	);
 });
@@ -67,7 +67,7 @@ router.get('/me', auth.privated, (req, res) => {
 		user.rewards = rewards || [];
 		return user;
 	}).then(data => res.json(data))
-		.catch(err => res.json(err));
+		.catch(err => res.status(442).json(err));
 })
 
 router.get('/myPending', auth.privated, (req, res) => {
@@ -115,7 +115,7 @@ router.get('/myChallenges', auth.privated, (req, res) => {
 			res.json(data[0]);
 		},
 		(err) => {
-			res.json(err);
+			res.status(442).json(err);
 		}
 	);
 });
@@ -134,7 +134,7 @@ router.post('/register', (req, res) => {
 			} else {
 				res.status(442).json({ message: 'Something went wrong'});
 			}
-		}).catch(err => res.status(442).json(err));
+		}).catch(err => res.status(442).status(442).json(err));
 });
 
 router.post('/join', (req, res) => {
@@ -143,7 +143,7 @@ router.post('/join', (req, res) => {
 			res.json(data);
 		},
 		(err) => {
-			res.json(err);
+			res.status(442).json(err);
 		}
 	);
 });

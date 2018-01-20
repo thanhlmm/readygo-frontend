@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
   knex.table('Challenges').then(data => {
     res.json(data);
   }, (err) => {
-    res.json(err)
+    res.status(442).json(err)
   });
 })
 
@@ -26,7 +26,7 @@ router.post('/:id/join', auth.privated, (req, res) => {
   }).then(data => {
     res.json(data);
   }, (err) => {
-    res.json(err)
+    res.status(442).json(err)
   });
 });
 

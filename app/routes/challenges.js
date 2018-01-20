@@ -27,7 +27,7 @@ router.get('/', auth.privated, (req, res) => {
   }).then(data => {
     res.json(data);
   }, (err) => {
-    res.json(err)
+    res.status(442).json(err)
   });
 })
 
@@ -35,7 +35,7 @@ router.post('/', (req, res) => {
   knex.table('challenges').insert(req.body).then(data => {
     res.json(data);
   }, (err) => {
-    res.json(err)
+    res.status(442).json(err)
   });
 })
 
@@ -64,7 +64,7 @@ router.post('/:id/join', auth.privated, (req, res) => {
     res.json(data);
     })
     .catch((err) => {
-      res.json(err)
+      res.status(442).json(err)
     });
 });
 
@@ -81,7 +81,7 @@ router.get('/:id/member', auth.privated, (req, res) => {
     .where({ 'challenges.id': id })
     .join('challengesacceptant', 'challenges.id', 'challengesacceptant.challenge_id')
     .join('users', 'challengesacceptant.user_id', 'users.id')
-    .then(data => res.json(data), (err) => res.json(err));
+    .then(data => res.json(data), (err) => res.status(442).json(err));
 });
 
 router.get('/:id/rewards', auth.privated, (req, res) => {
@@ -90,7 +90,7 @@ router.get('/:id/rewards', auth.privated, (req, res) => {
 
   knex.table('rewards')
     .where({ 'challenge_id': id })
-    .then(data => res.json(data), (err) => res.json(err));
+    .then(data => res.json(data), (err) => res.status(442).json(err));
 });
 
 router.post('/:id/rewards', auth.privated, (req, res) => {
@@ -101,7 +101,7 @@ router.post('/:id/rewards', auth.privated, (req, res) => {
   newReward.challenge_id = id;
   knex.table('rewards')
     .insert(newReward)
-    .then(data => res.json(data), (err) => res.json(err));
+    .then(data => res.json(data), (err) => res.status(442).json(err));
 });
 
 
@@ -117,7 +117,7 @@ router.post('/:id/status', auth.privated, (req, res) => {
     .update({
       status: body.status
     })
-    .then(data => res.json(data), (err) => res.json(err));
+    .then(data => res.json(data), (err) => res.status(442).json(err));
 });
 
 router.post('/:id/confirm', auth.privated, (req, res) => {
@@ -134,14 +134,14 @@ router.post('/:id/confirm', auth.privated, (req, res) => {
   //   .update({
   //     status: body.status
   //   })
-  //   .then(data => res.json(data), (err) => res.json(err));
+  //   .then(data => res.json(data), (err) => res.status(442).json(err));
 })
 
 router.get('/:id/activities', auth.privated, (req, res) => {
   const id = req.params.id;
   knex.table('challengesacceptant')
     .where({challenge_id: id})
-    .then(data => res.json(data), (err) => res.json(err));
+    .then(data => res.json(data), (err) => res.status(442).json(err));
 })
 
 router.post('/:id/invite', auth.privated, (req, res) => {
