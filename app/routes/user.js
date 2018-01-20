@@ -7,7 +7,7 @@ const auth = require('../util/auth')
 const config = require('../config');
 const knex = require('../db');
 
-router.get('/login', (req, res) => {
+router.post('/login', (req, res) => {
 
 	knex.table('Users')
 		.where({
