@@ -24,7 +24,8 @@ module.exports = new CronJob('*/5 * * * *', function() {
       if (data) {
         // Todo: Send notification that challenge success
       }
-    });
+    })
+    .catch(err => console.log(err));
 
   
   // Change status from NEW to fail if not enough members
@@ -34,7 +35,8 @@ module.exports = new CronJob('*/5 * * * *', function() {
     .andWhere({ status: config.NEW })
     .then(challenges => {
       // Todo: Send notification that challenge fail
-    });
+    })
+    .catch(err => console.log(err));
 
 
   // When end_time passed
@@ -46,9 +48,16 @@ module.exports = new CronJob('*/5 * * * *', function() {
       challenges.forEach(challenge => {
         if (challenge.total_member === challenge.require_user) {
           // SUCCESS
-          return knex.table('challenges')
-            .where({ id: challenge.id })
-            .update({ status: config.SUCCESS })
+          return Promise.all([
+            knex.table('challenges')
+              .where({ id: challenge.id })
+              .update({ status: config.SUCCESS }),
+            knex.table('users')
+              .update(knex.raw('point = point + ' + challenge.point ))
+              .where(knex.raw('users.id IN (SELECT user_id FROM challengesacceptant WHERE challenge_id = '+ challenge.id +')'))
+          ])
+          // Todo: Send notification
+
         } else {
           // FAIL
           return knex.table('challenges')
@@ -58,7 +67,8 @@ module.exports = new CronJob('*/5 * * * *', function() {
       });
     }).then(data => {
       console.log(data);
-    });
+    })
+    .catch(err => console.log(err));
 
   
 
