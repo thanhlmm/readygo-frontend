@@ -15,16 +15,11 @@ router.post('/login', (req, res) => {
 			phone: body.phone,
 		})
 		.then(data => {
-			if (data && data.length && data.length === 0) {
-				res.status(442).json({
-					message: 'Wrong phone number or password'
+			if (data && data.length === 0) {
+				res.status(404).json({
+					message: 'Not found'
 				})
 			} else {
-				if (data && data.length !== 1) {
-					res.status(404).json({
-						message: 'Not found'
-					})
-				}
 				const user = data[0];
 				console.log(user);
 				if (user.password !== body.password) {
@@ -32,14 +27,7 @@ router.post('/login', (req, res) => {
 						message: 'Wrong phone number or password'
 					})
 				} else {
-					const token = jwt.sign(
-						{
-							id: 1,
-							fullname: 'Lê Minh Thành',
-							phone: '0938102160',
-						},
-						config.secret
-					);
+					const token = jwt.sign(user, config.secret);
 					res.status(200).json({ token, message: 'Login success' });
 				}
 			}
