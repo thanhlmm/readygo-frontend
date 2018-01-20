@@ -23,7 +23,8 @@ router.post('/:id/join', auth.privated, (req, res) => {
   knex.table('ChallengesAcceptant').insert({
     challenge_id: id,
     user_id: user.id,
-    status: 1
+    status: 1,
+    date: new Date(),
   }).then(data => {
     res.json(data);
   }, (err) => {
@@ -77,6 +78,13 @@ router.post('/:id/confirm', auth.privated, (req, res) => {
   //     status: body.status
   //   })
   //   .then(data => res.json(data), (err) => res.json(err));
+})
+
+router.get('/:id/activities', auth.privated, (req, res) => {
+  const id = req.params.id;
+  knex.table('ChallengesAcceptant')
+    .where({challenge_id: id})
+    .then(data => res.json(data), (err) => res.json(err));
 })
 
 router.post('/:id/invite', auth.privated, (req, res) => {
