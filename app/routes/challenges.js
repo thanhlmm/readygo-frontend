@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const auth = require('../util/auth');
 const config = require('../config');
 const knex = require('../db');
-const twilio = require('../twilio');
+const nexmo = require('../nexmo');
 
 router.get('/', (req, res) => {
   knex.table('Challenges').then(data => {
@@ -83,12 +83,11 @@ router.post('/:id/invite', auth.privated, (req, res) => {
   const id = req.params.id;
   const user = req.user;
 
-  twilio.messages.create({
-      body: 'Hello from Node',
-      to: config.twilioPhone,  // Text this number
-      from: '+12345678901' // From a valid Twilio number
+  nexmo.message.sendSms('NEXMO', req.body.phone, 'Hello', {}, (err, data) => {
+    console.log(err);
+    console.log(data);
+    res.json({ ok: 'ok' })
   })
-  .then((message) => console.log(message.sid))
 
 })
 

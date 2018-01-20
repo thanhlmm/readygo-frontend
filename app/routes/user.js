@@ -84,4 +84,12 @@ router.post('/join', (req, res) => {
 	);
 });
 
+router.post('/updateOneSignal', auth.privated, (req, res) => {
+	const user = req.user;
+
+	knex.table('Users')
+		.where({ id: user.id })
+		.update({ oneSignal: body.oneSignal })
+})
+
 module.exports = router;
