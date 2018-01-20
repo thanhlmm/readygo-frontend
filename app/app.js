@@ -19,15 +19,16 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(jwt({ secret: config.secret}).unless({path: ['/user/login', '/user/register']}));
 
-app.use('/user', require('./routes/user'))
+app.use('/user', require('./routes/user'));
+app.use('/challenges', require('./routes/challenges'));
 
 app.use((req, res) => {
   res.end('hello world');
 })
 
-app.listen(3000, (err) => {
+app.listen(3600, (err) => {
   if (err) console.log(err)
-  console.log('Your sever is up at 3000');
+  console.log('Your sever is up at 3600');
 })
 
 module.exports = app
