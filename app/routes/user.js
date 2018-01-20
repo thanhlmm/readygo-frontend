@@ -124,17 +124,19 @@ router.post('/register', (req, res) => {
 	knex('users').insert(req.body)
 		.then(data => data[0])
 		.then((userId) => {
+			console.log(userId)
 			return knex.table('users')
 				.where({ id: userId })
 		}).then(data => {
 			const user = data[0];
+			console.log(user);
 			if (user) {
-				const token = jwt.sign(data, config.secret);
-				res.status(200).json({ token, message: 'Signup success' });
+				const token = jwt.sign(user, config.secret);
+				return res.json({ token, message: 'Signup success' });
 			} else {
-				res.status(442).json({ message: 'Something went wrong'});
+				return res.status(442).json({ message: 'Something went wrong'});
 			}
-		}).catch(err => res.status(442).status(442).json(err));
+		}).catch(err => res.status(442).json(err));
 });
 
 router.post('/join', (req, res) => {
