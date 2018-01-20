@@ -9,7 +9,7 @@ const knex = require('../db');
 const nexmo = require('../nexmo');
 
 router.get('/', (req, res) => {
-  knex.table('Challenges').then(data => {
+  knex.table('challenges').then(data => {
     res.json(data);
   }, (err) => {
     res.json(err)
@@ -20,7 +20,7 @@ router.post('/:id/join', auth.privated, (req, res) => {
   const id = req.params.id;
   const user = req.user;
 
-  knex.table('ChallengesAcceptant').insert({
+  knex.table('challengesacceptant').insert({
     challenge_id: id,
     user_id: user.id,
     status: 1,
@@ -36,15 +36,15 @@ router.get('/:id/member', auth.privated, (req, res) => {
   const id = req.params.id;
   const user = req.user;
 
-  knex.table('Challenges')
+  knex.table('challenges')
     .select({
-      id: 'Users.id',
-      phone: 'Users.phone',
-      fullname: 'Users.fullname'
+      id: 'users.id',
+      phone: 'users.phone',
+      fullname: 'users.fullname'
     })
-    .where({ 'Challenges.id': id })
-    .join('ChallengesAcceptant', 'Challenges.id', 'ChallengesAcceptant.challenge_id')
-    .join('Users', 'ChallengesAcceptant.user_id', 'Users.id')
+    .where({ 'challenges.id': id })
+    .join('challengesacceptant', 'challenges.id', 'challengesacceptant.challenge_id')
+    .join('users', 'challengesacceptant.user_id', 'users.id')
     .then(data => res.json(data), (err) => res.json(err));
 });
 
@@ -52,7 +52,7 @@ router.get('/:id/rewards', auth.privated, (req, res) => {
   const id = req.params.id;
   const user = req.user;
 
-  knex.table('Rewards')
+  knex.table('rewards')
     .where({ 'challenge_id': id })
     .then(data => res.json(data), (err) => res.json(err));
 });
@@ -63,7 +63,7 @@ router.post('/:id/rewards', auth.privated, (req, res) => {
 
   const newReward = req.body;
   newReward.challenge_id = id;
-  knex.table('Rewards')
+  knex.table('rewards')
     .insert(newReward)
     .then(data => res.json(data), (err) => res.json(err));
 });
@@ -73,7 +73,7 @@ router.post('/:id/status', auth.privated, (req, res) => {
   const id = req.params.id;
   const user = req.user;
 
-  knex.table('ChallengesAcceptant')
+  knex.table('challengesacceptant')
     .where({
       user_id: user.id,
       challenge_id: id,
@@ -90,7 +90,7 @@ router.post('/:id/confirm', auth.privated, (req, res) => {
 
   res.json(req.body);
 
-  // knex.table('ChallengesAcceptant')
+  // knex.table('challengesacceptant')
   //   .where({
   //     user_id: user.id,
   //     challenge_id: id,
@@ -103,7 +103,7 @@ router.post('/:id/confirm', auth.privated, (req, res) => {
 
 router.get('/:id/activities', auth.privated, (req, res) => {
   const id = req.params.id;
-  knex.table('ChallengesAcceptant')
+  knex.table('challengesacceptant')
     .where({challenge_id: id})
     .then(data => res.json(data), (err) => res.json(err));
 })

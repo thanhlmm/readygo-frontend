@@ -10,7 +10,7 @@ const knex = require('../db');
 router.post('/login', (req, res) => {
 	const body = req.body;
 
-	knex.table('Users')
+	knex.table('users')
 		.where({
 			phone: body.phone,
 		})
@@ -42,7 +42,7 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-	knex.table('Users').then(
+	knex.table('users').then(
 		(data) => {
 			console.log(data);
 			res.json(data);
@@ -55,14 +55,14 @@ router.get('/', (req, res) => {
 
 router.get('/me', auth.privated, (req, res) => {
 	const user = req.user;
-	knex.table('Users')
+	knex.table('users')
 		.where_=({ id: user.id })
 		.then(data => res.json(data[0]), (err) => res.json(err));
 })
 
 router.get('/myChallenges', auth.privated, (req, res) => {
 	const user = req.user;
-	knex.table('ChallengeAcceptant').where({sdt: user.sdt }).then(
+	knex.table('challengeacceptant').where({sdt: user.sdt }).then(
 		(data) => {
 			res.json(data[0]);
 		},
@@ -73,7 +73,7 @@ router.get('/myChallenges', auth.privated, (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-	knex('Users').insert(req.body).then(
+	knex('users').insert(req.body).then(
 		(data) => {
 			res.json(data);
 		},
@@ -84,7 +84,7 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/join', (req, res) => {
-	knex('ChallengeAcceptant').insert(req.body).then(
+	knex('challengeacceptant').insert(req.body).then(
 		(data) => {
 			res.json(data);
 		},
@@ -97,7 +97,7 @@ router.post('/join', (req, res) => {
 router.post('/updateOneSignal', auth.privated, (req, res) => {
 	const user = req.user;
 
-	knex.table('Users')
+	knex.table('users')
 		.where({ id: user.id })
 		.update({ oneSignal: body.oneSignal })
 })
