@@ -8,6 +8,7 @@ const config = require('../config');
 const knex = require('../db');
 
 router.post('/login', (req, res) => {
+	const body = req.body;
 
 	knex.table('Users')
 		.where({
@@ -19,6 +20,8 @@ router.post('/login', (req, res) => {
 					messages: 'Wrong phone number or password'
 				})
 			} else {
+				const user = data[0];
+				console.log(user);
 				if (user.password !== body.password) {
 					res.json({
 						messages: 'Wrong phone number or password'
