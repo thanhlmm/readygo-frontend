@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const jwt = require('jsonwebtoken');
+const moment = require('moment');
 
 const auth = require('../util/auth')
 const config = require('../config');
@@ -67,6 +68,44 @@ router.get('/me', auth.privated, (req, res) => {
 		return user;
 	}).then(data => res.json(data))
 		.catch(err => res.json(err));
+})
+
+router.get('/myPending', auth.privated, (req, res) => {
+	const user = req.user;
+	knex.table('challenges')
+		.select(knex.raw('challenges.*'))
+		.join('challengesacceptant', 'challengesacceptant.challenge_id', 'challenges.id')
+		.where({
+			'challengesacceptant.user_id': user.id
+		}).andWhere({
+			'challenges.status': config.NEW
+		}).then(data => res.json(data))
+			.catch(err => res.status(442).json(err))
+})
+
+router.get('/myComplete', auth.privated, (req, res) => {
+	const user = req.user;
+	knex.table('challenges')
+		.select(knex.raw('challenges.*'))
+		.join('challengesacceptant', 'challengesacceptant.challenge_id', 'challenges.id')
+		.where({
+			'challengesacceptant.user_id': user.id
+		}).andWhere({
+			'challenges.status': config.SUCCESS
+		}).then(data => res.json(data))
+			.catch(err => res.status(442).json(err))
+})
+
+router.get('/inMonth', auth.privated, (req, res) => {
+	const user = req.user;
+	knex.table('challenges')
+		.select(knex.raw('challenges.*'))
+		.join('challengesacceptant', 'challengesacceptant.challenge_id', 'challenges.id')
+		.where({
+			'challengesacceptant.user_id': user.id
+		}).andWhere('challenges.start_time', '<=', moment().startOf('month').toDate())
+			.then(data => res.json(data))
+			.catch(err => res.status(442).json(err))
 })
 
 router.get('/myChallenges', auth.privated, (req, res) => {
