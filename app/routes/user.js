@@ -82,14 +82,20 @@ router.get('/myChallenges', auth.privated, (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-	knex('users').insert(req.body).then(
-		(data) => {
-			res.json(data);
-		},
-		(err) => {
-			res.json(err);
-		}
-	);
+	knex('users').insert(req.body)
+		.then(data => data[0])
+		.then((userId) => {
+			return knex.table('users')
+				.where({ id: userId })
+		}).then(data => {
+			const user = data[0];
+			if (user) {
+				const token = jwt.sign(data, config.secret);
+				res.status(200).json({ token, message: 'Signup success' });
+			} else {
+				res.status(442).json({ message: 'Something went wrong'});
+			}
+		}).catch(err => res.status(442).json(err));
 });
 
 router.post('/join', (req, res) => {
