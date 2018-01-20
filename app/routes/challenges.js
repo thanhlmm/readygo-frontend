@@ -9,7 +9,19 @@ const knex = require('../db');
 const nexmo = require('../nexmo');
 
 router.get('/', (req, res) => {
-  knex.table('challenges').then(data => {
+  Promise.all([
+    knex.table('rewards'),
+    knex.table('challenges')
+  ]).then(data => {
+    console.log(data)
+    const rewards = data[0];
+    const challenges = data[1];
+    challenges.forEach(challenge => {
+      challenge.rewards = rewards.filter(reward => reward.challenge_id === challenge.id)
+    });
+
+    return challenges;
+  }).then(data => {
     res.json(data);
   }, (err) => {
     res.json(err)
