@@ -1,6 +1,6 @@
 module.exports = {
   privated: (req, res, next) => {
-    if (!req.user.sdt) {
+    if (!req.user.phone) {
       res.json({
         error: 'You need token to access this routes'
       });
