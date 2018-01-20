@@ -1,10 +1,12 @@
-var knex = require('knex')({
+const config = require('../config')
+
+const knex = require('knex')({
   client: 'mysql',
   connection: {
-    host : '127.0.0.1',
-    user : 'root',
-    password : 'readygo!',
-    database : 'readygo'
+    host : config.dbHost,
+    user : config.dbUser,
+    password : config.dbPassword,
+    database : config.dbName
   }
 });
 
