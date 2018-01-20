@@ -7,7 +7,9 @@ const jwt = require('express-jwt');
 
 const config = require('./config');
 
-const app = express()
+const app = express();
+
+const backgroundJob = require('./background');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))

@@ -8,10 +8,13 @@ const config = require('../config');
 const knex = require('../db');
 const nexmo = require('../nexmo');
 
-router.get('/', (req, res) => {
+router.get('/', auth.privated, (req, res) => {
+  const user = req.user;
   Promise.all([
     knex.table('rewards'),
-    knex.table('challenges').orderBy('id', 'DESC')
+    knex.table('challenges')
+      .select(knex.raw('challenges.*, (SELECT COUNT(id) from challengesacceptant WHERE challengesacceptant.challenge_id = challenges.id AND challengesacceptant.user_id = '+ user.id +') as is_joined'))
+      .orderBy('id', 'DESC')
   ]).then(data => {
     console.log(data)
     const rewards = data[0];
@@ -40,16 +43,29 @@ router.post('/:id/join', auth.privated, (req, res) => {
   const id = req.params.id;
   const user = req.user;
 
-  knex.table('challengesacceptant').insert({
-    challenge_id: id,
-    user_id: user.id,
-    status: 1,
-    date: new Date(),
-  }).then(data => {
+  knex.table('challengesacceptant')
+    .where({
+      challenge_id: id,
+      user_id: user.id,
+    })
+    .then(data => {
+      if (data.length > 0) {
+        return res.status(442).json({ message: 'You have already joined this challenge '});
+      } else {
+        return knex.table('challengesacceptant').insert({
+          challenge_id: id,
+          user_id: user.id,
+          status: 1,
+          date: new Date(),
+        })
+      }
+    })
+    .then(data => {
     res.json(data);
-  }, (err) => {
-    res.json(err)
-  });
+    })
+    .catch((err) => {
+      res.json(err)
+    });
 });
 
 router.get('/:id/member', auth.privated, (req, res) => {
