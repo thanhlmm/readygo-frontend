@@ -11,7 +11,7 @@ const nexmo = require('../nexmo');
 router.get('/', (req, res) => {
   Promise.all([
     knex.table('rewards'),
-    knex.table('challenges')
+    knex.table('challenges').orderBy('id', 'DESC')
   ]).then(data => {
     console.log(data)
     const rewards = data[0];
