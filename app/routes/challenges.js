@@ -16,6 +16,14 @@ router.get('/', (req, res) => {
   });
 })
 
+router.post('/', (req, res) => {
+  knex.table('challenges').insert(req.body).then(data => {
+    res.json(data);
+  }, (err) => {
+    res.json(err)
+  });
+})
+
 router.post('/:id/join', auth.privated, (req, res) => {
   const id = req.params.id;
   const user = req.user;
