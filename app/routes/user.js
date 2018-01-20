@@ -55,14 +55,30 @@ router.get('/', (req, res) => {
 
 router.get('/me', auth.privated, (req, res) => {
 	const user = req.user;
-	knex.table('users')
-		.where({ id: user.id })
-		.then(data => res.json(data[0]), (err) => res.json(err));
+	Promise.all([
+		knex.table('users')
+			.where({ id: user.id }),
+		knex.table('challenges')
+			.select(knex.raw('rewards.*'))
+			.where({
+				// 'challenges.user_id': user.id,
+				'challenges.status': config.SUCCESS
+			})
+			.join('challengesacceptant', 'challengesacceptant.challenge_id', 'challenges.id')
+			.join('rewards', 'rewards.challenge_id', 'challenges.id')
+	]).then(data => {
+		console.log(data[1]);
+		const user = data[0][0];
+		const rewards = data[1]
+		user.rewards = rewards || [];
+		return user;
+	}).then(data => res.json(data))
+		.catch(err => res.json(err));
 })
 
 router.get('/myChallenges', auth.privated, (req, res) => {
 	const user = req.user;
-	knex.table('challengeacceptant').where({sdt: user.sdt }).then(
+	knex.table('challengesacceptant').where({sdt: user.sdt }).then(
 		(data) => {
 			res.json(data[0]);
 		},
@@ -84,7 +100,7 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/join', (req, res) => {
-	knex('challengeacceptant').insert(req.body).then(
+	knex('challengesacceptant').insert(req.body).then(
 		(data) => {
 			res.json(data);
 		},
