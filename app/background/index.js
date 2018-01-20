@@ -6,9 +6,7 @@ module.exports = new CronJob('*/5 * * * *', function() {
   
   console.log('Run every 5 min');
   // Change status from NEW to READY if we got enough member
-  knex.table('challenges')
-    .select('challenges.*, (SELECT COUNT(id) from challengesacceptant where challengesacceptant.challenge_id = challenges.id) as total_member')
-    .where({ status: config.NEW })
+  knex.raw('select `challenges`.*, (SELECT COUNT(id) from challengesacceptant where challengesacceptant.challenge_id = challenges.id) as `total_member` from `challenges` where `challenges`.`status` = '+ config.NEW +' order by `total_member` DESC')
     .then(challenges => {
       challenges.forEach(challenge => {
         if (challenge.total_member === challenge.require_user) {
@@ -37,10 +35,11 @@ module.exports = new CronJob('*/5 * * * *', function() {
 
 
   // When end_time passed
-  knex.table('challenges')
-    .select(`challenges.*, (SELECT COUNT(id) FROM challengesacceptant WHERE challengesacceptant.challenge_id = challenges.id AND challengesacceptant = ${config.COMPLETE}) as total_member`)
-    .where('end_time', '<', new Date())
-    .andWhere({ status: config.NEW })
+  // knex.table('challenges')
+  //   .select(`challenges.*, (SELECT COUNT(id) FROM challengesacceptant WHERE challengesacceptant.challenge_id = challenges.id AND challengesacceptant = ${config.COMPLETE}) as total_member`)
+  //   .where('end_time', '<', new Date())
+  //   .andWhere({ status: config.NEW })
+  knex.raw('select `challenges`.*, (SELECT COUNT(id) from challengesacceptant where challengesacceptant.challenge_id = challenges.id AND challengesacceptant = '+ config.COMPLETE +')) as `total_member` from `challenges` where `challenges`.`status` = 1 order by `total_member` DESC')
     .then(challenges => {
       challenges.forEach(challenge => {
         if (challenge.total_member === challenge.require_user) {
