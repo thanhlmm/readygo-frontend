@@ -2,7 +2,7 @@ const knex = require('./db')
 const config = require('./config')
 
 console.log(
-knex.table('challenges')
-    .update({ status: config.FAIL })
-    .where('start_time', '<', new Date())
-    .andWhere({ status: config.NEW }).toString())
+    knex.table('invitations')
+    .select(knex.raw('challenges.*'))
+    .join('challenges', 'challenges.id', 'invitations.challenge_id')
+    .where({ phone: '01293' }).toString())
