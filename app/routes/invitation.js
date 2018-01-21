@@ -60,7 +60,7 @@ router.get('/:id/accept', auth.privated, (req, res) => {
     })
     .then(data => {
       return knex.table('invitations')
-        .where({ id })
+        .where({ challenge_id: id })
         .delete()
         .then(data => res.json(data))
     })
