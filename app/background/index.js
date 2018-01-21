@@ -29,7 +29,7 @@ module.exports = new CronJob('*/1 * * * *', function() {
               if (IDs.length > 0) {
                 notif.createNotification({
                   contents: {
-                    contents: `${challenge.name} đã đủ số người tham dự. Sẵn sàng để chinh phục thử thách nhé!`
+                    contents: `Challenge ${challenge.name} is ready. Repair for this!`
                   },
                   specific: {
                     include_player_ids: IDs
@@ -69,7 +69,7 @@ module.exports = new CronJob('*/1 * * * *', function() {
           if (IDs.length > 0) {
             notif.createNotification({
               contents: {
-                contents: `Challenge ${challenge.name} không đủ số người tham dự nên đã bị huỷ!`
+                contents: `Challenge ${challenge.name} is cancelled due to lack of quantity member`
               },
               specific: {
                 include_player_ids: IDs
@@ -112,7 +112,7 @@ module.exports = new CronJob('*/1 * * * *', function() {
               if (IDs.length > 0) {
                 notif.createNotification({
                   contents: {
-                    contents: `Chúc mừng! Challenge ${challenge.name} đã hoàn thành, cùng nhận giải nhé`
+                    contents: `Congratulation! Challenge ${challenge.name} is complete. Let's take reward`
                   },
                   specific: {
                     include_player_ids: IDs
@@ -141,7 +141,7 @@ module.exports = new CronJob('*/1 * * * *', function() {
               if (IDs.length > 0) {
                 notif.createNotification({
                   contents: {
-                    contents: `Challenge ${challenge.name} đã thất bại. Nhớ dặn dò team của bạn tham gia đầy đủ ở challenge sau nhé!`
+                    contents: `Challenge ${challenge.name} is FAIL. Remember to ask others member to do it together!`
                   },
                   specific: {
                     include_player_ids: IDs
