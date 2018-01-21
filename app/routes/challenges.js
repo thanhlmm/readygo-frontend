@@ -15,7 +15,8 @@ router.get('/', auth.privated, (req, res) => {
     knex.table('rewards'),
     knex.table('challenges')
       .select(knex.raw('challenges.*, (SELECT COUNT(id) from challengesacceptant WHERE challengesacceptant.challenge_id = challenges.id AND challengesacceptant.user_id = '+ user.id +') as is_joined'))
-      .orderBy('id', 'DESC')
+      .orderBy('status')
+      .orderBy('id', 'desc')
   ]).then(data => {
     console.log(data)
     const rewards = data[0];
