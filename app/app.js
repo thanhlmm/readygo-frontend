@@ -23,7 +23,8 @@ app.use(jwt({ secret: config.secret}).unless({path: ['/user/login', '/user/regis
 
 app.use('/user', require('./routes/user'));
 app.use('/challenges', require('./routes/challenges'));
-app.use('/activities', require('./routes/activities'))
+app.use('/activities', require('./routes/activities'));
+app.use('/invitation', require('./routes/invitation'));
 
 app.use((req, res) => {
   res.end('hello world');
