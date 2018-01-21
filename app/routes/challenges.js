@@ -22,8 +22,8 @@ router.get('/', auth.privated, (req, res) => {
     const challenges = data[1];
     challenges.forEach(challenge => {
       challenge.rewards = rewards.filter(reward => reward.challenge_id === challenge.id);
-      challenge.start_time = moment(challenge.start_time).format('DD MMM hh');
-      challenge.end_time = moment(challenge.end_time).format('DD MMM hh');
+      challenge.start_time = moment(challenge.start_time).format('ddd, MMM DD HH:mm');
+      challenge.end_time = moment(challenge.end_time).format('ddd, MMM DD HH:mm');
     });
 
     return challenges;

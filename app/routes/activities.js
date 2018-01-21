@@ -14,8 +14,8 @@ router.get('/', auth.privated, (req, res) => {
     .then(data => {
       const challenges = data[0];
       challenges.forEach(challenge => {
-        challenge.start_time = moment(challenge.start_time).format('DD MMM hh');
-        challenge.end_time = moment(challenge.end_time).format('DD MMM hh');
+        challenge.start_time = moment(challenge.start_time).format('ddd, MMM DD HH:mm');
+        challenge.end_time = moment(challenge.end_time).format('ddd, MMM DD HH:mm');
       });
       res.json(challenges);
     }, (err) => {
