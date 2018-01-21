@@ -57,7 +57,7 @@ module.exports = new CronJob('*/1 * * * *', function() {
     .then(challenges => {
       console.log(challenges)
       // Todo: Send notification that challenge fail
-      challenges.forEach(challenge => {
+      challenges && challenges.forEach(challenge => {
         knex.table('challengesacceptant')
         .select('oneSignal')
         .join('users', 'users.id', 'challengesacceptant.user_id')
@@ -88,7 +88,7 @@ module.exports = new CronJob('*/1 * * * *', function() {
     .where('end_time', '<', new Date())
     .andWhere({ status: config.READY })
     .then(challenges => {
-      challenges.forEach(challenge => {
+      challenges && challenges.forEach(challenge => {
         if (challenge.total_member === challenge.require_user) {
           // SUCCESS
           Promise.all([
@@ -129,7 +129,7 @@ module.exports = new CronJob('*/1 * * * *', function() {
             .update({ status: config.FAIL })
             .then(data => console.log(data))
           // Todo: Send notification
-          challenges.forEach(challenge => {
+          challenges && challenges.forEach(challenge => {
             knex.table('challengesacceptant')
             .select('oneSignal')
             .join('users', 'users.id', 'challengesacceptant.user_id')
