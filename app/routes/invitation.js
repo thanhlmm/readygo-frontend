@@ -10,7 +10,9 @@ router.get('/', auth.privated, (req, res) => {
   const user = req.user;
   console.log(user);
   knex.table('invitations')
-    .where({ phone: user.phone })
+    .select(knex.raw('invitations.challenge_id, users.*'))
+    .join('users', 'users.id', 'invitations.user_id')
+    .where({ 'invitations.phone': user.phone })
     .then(data => res.json(data))
     .catch(err => res.status(442).json(err))
 });

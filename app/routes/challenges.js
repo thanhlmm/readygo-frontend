@@ -161,4 +161,11 @@ router.post('/:id/invite', auth.privated, (req, res) => {
 
 })
 
+router.get('/:id', (req, res) => {
+  knex.table('challenges')
+    .where({id: req.params.id})
+    .then(data => res.json(data[0]))
+    .catch(err => res.status(442).json(err))
+})
+
 module.exports = router;
