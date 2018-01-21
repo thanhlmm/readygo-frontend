@@ -49,7 +49,7 @@ router.get('/:id/accept', auth.privated, (req, res) => {
       return knex.table('invitations')
         .where({ id })
         .delete()
-        .then(data => console.log(data))
+        .then(data => res.json(data))
     })
     .catch(err => res.status(442).json(err))
 });
