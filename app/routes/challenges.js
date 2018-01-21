@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const jwt = require('jsonwebtoken');
+const moment = require('moment');
 
 const auth = require('../util/auth');
 const config = require('../config');
@@ -20,7 +21,9 @@ router.get('/', auth.privated, (req, res) => {
     const rewards = data[0];
     const challenges = data[1];
     challenges.forEach(challenge => {
-      challenge.rewards = rewards.filter(reward => reward.challenge_id === challenge.id)
+      challenge.rewards = rewards.filter(reward => reward.challenge_id === challenge.id);
+      challenge.start_time = moment(challenge.start_time).format('DD MMM hh');
+      challenge.end_time = moment(challenge.end_time).format('DD MMM hh');
     });
 
     return challenges;
