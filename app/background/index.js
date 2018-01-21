@@ -87,7 +87,7 @@ module.exports = new CronJob('*/1 * * * *', function() {
 
   // Reminder
   knex.table('challenges')
-  .where('start_time', '<', moment().subtract(30, minute).toDate())
+  .where('start_time', '<', moment().subtract(30, 'minute').toDate())
   .andWhere({ status: config.READY })
   .then(challenges => {
     console.log(challenges)
