@@ -15,6 +15,16 @@ router.get('/', auth.privated, (req, res) => {
     .catch(err => res.status(442).json(err))
 });
 
+router.post('/', auth.privated, (req, res) => {
+  const user = req.user;
+  const newInvitation = req.body;
+  newInvitation.user_id = user.id;
+
+  knex.table('invitations')
+    .insert(newInvitation)
+    .then(data => res.json(data))
+    .catch(err => res.status(442).json(err))
+})
 
 router.get('/:id/accept', auth.privated, (req, res) => {
   const user = req.user;
