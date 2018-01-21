@@ -128,7 +128,7 @@ router.post('/:id/confirm', auth.privated, (req, res) => {
   const id = req.params.id;
   const user = req.user;
 
-  res.json(req.body);
+  // res.json(req.body);
 
   knex.table('challengesacceptant')
     .where({
