@@ -127,15 +127,15 @@ router.post('/:id/confirm', auth.privated, (req, res) => {
 
   res.json(req.body);
 
-  // knex.table('challengesacceptant')
-  //   .where({
-  //     user_id: user.id,
-  //     challenge_id: id,
-  //   })
-  //   .update({
-  //     status: body.status
-  //   })
-  //   .then(data => res.json(data), (err) => res.status(442).json(err));
+  knex.table('challengesacceptant')
+    .where({
+      user_id: user.id,
+      challenge_id: id,
+    })
+    .update({
+      status: config.COMPLETE
+    })
+    .then(data => res.json(data), (err) => res.status(442).json(err));
 })
 
 router.get('/:id/activities', auth.privated, (req, res) => {
