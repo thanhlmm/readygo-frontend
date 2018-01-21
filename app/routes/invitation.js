@@ -19,6 +19,7 @@ router.post('/', auth.privated, (req, res) => {
   const user = req.user;
   const newInvitation = req.body;
   newInvitation.user_id = user.id;
+  // Todo: add SMS send here
 
   knex.table('invitations')
     .insert(newInvitation)
