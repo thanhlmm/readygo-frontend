@@ -14,7 +14,7 @@ router.get('/', auth.privated, (req, res) => {
   Promise.all([
     knex.table('rewards'),
     knex.table('challenges')
-      .select(knex.raw('challenges.*, (SELECT COUNT(id) from challengesacceptant WHERE challengesacceptant.challenge_id = challenges.id AND challengesacceptant.user_id = '+ user.id +') as is_joined'))
+      .select(knex.raw('challenges.*, (SELECT COUNT(id) from challengesacceptant WHERE challengesacceptant.challenge_id = challenges.id AND challengesacceptant.user_id = '+ user.id +') as is_joined, (SELECT COUNT(id) from challengesacceptant WHERE challengesacceptant.challenge_id = challenges.id AND challengesacceptant.user_id = '+ user.id +' AND challengesacceptant.status = '+ config.COMPLETE +') as is_user_complete'))
       .orderBy('status')
       .orderBy('id', 'desc')
   ]).then(data => {
