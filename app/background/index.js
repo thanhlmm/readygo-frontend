@@ -2,6 +2,7 @@ const CronJob = require('cron').CronJob;
 const knex = require('../db');
 const config = require('../config');
 const notif = require('../notif');
+const moment = require('moment');
 
 module.exports = new CronJob('*/1 * * * *', function() {
   
@@ -83,6 +84,38 @@ module.exports = new CronJob('*/1 * * * *', function() {
       })
     })
     .catch(err => console.log(err));
+
+  // Reminder
+  knex.table('challenges')
+  .where('start_time', '<', moment().subtract(30, minute).toDate())
+  .andWhere({ status: config.READY })
+  .then(challenges => {
+    console.log(challenges)
+    // Todo: Send notification that challenge fail
+    challenges && challenges.forEach(challenge => {
+      console.log('Reminder user');
+      knex.table('challengesacceptant')
+      .select('oneSignal')
+      .join('users', 'users.id', 'challengesacceptant.user_id')
+      .where({ challenge_id: challenge.id})
+      .then(users => {
+        console.log(users);
+        const IDs = users.filter(user => user.oneSignal.length > 0).map(user => user.oneSignal)
+        console.log(IDs);
+        if (IDs.length > 0) {
+          notif.createNotification({
+            contents: {
+              contents: `Challenge ${challenge.name} is coming! Suit up NOW!`
+            },
+            specific: {
+              include_player_ids: IDs
+            },
+          })
+        }
+      })
+    })
+  })
+  .catch(err => console.log(err));
 
 
   // When end_time passed
