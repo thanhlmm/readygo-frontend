@@ -19,7 +19,7 @@ app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
-app.use(jwt({ secret: config.secret}).unless({path: ['/user/login', '/user/register']}));
+app.use(jwt({ secret: config.secret}).unless({path: ['/user/login', '/user/register', '/user/test']}));
 
 app.use('/user', require('./routes/user'));
 app.use('/challenges', require('./routes/challenges'));

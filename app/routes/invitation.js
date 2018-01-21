@@ -44,12 +44,12 @@ router.get('/:id/accept', auth.privated, (req, res) => {
   const user = req.user;
   const id = req.params.id;
   knex.table('invitations')
-    .where({ id })
+    .where({ challenge_id: id })
     .then(data => {
       const invitation = data[0];
       if (invitation) {
         return knex.table('challengesacceptant').insert({
-          challenge_id: invitation.challenge_id,
+          challenge_id: id,
           user_id: user.id,
           status: 1,
           date: new Date(),
@@ -71,7 +71,7 @@ router.get('/:id/reject', auth.privated, (req, res) => {
   const user = req.user;
   const id = req.params.id;
   knex.table('invitations')
-    .where({ id })
+    .where({ challenge_id: id })
     .delete()
     .then(data => res.json(data))
     .catch(err => res.status(442).json(err))

@@ -7,6 +7,7 @@ const moment = require('moment');
 const auth = require('../util/auth')
 const config = require('../config');
 const knex = require('../db');
+const notif = require('../notif');
 
 router.post('/login', (req, res) => {
 	const body = req.body;
@@ -68,6 +69,17 @@ router.get('/me', auth.privated, (req, res) => {
 		return user;
 	}).then(data => res.json(data))
 		.catch(err => res.status(442).json(err));
+})
+
+router.get('/test', (req, res) => {
+	const message = req.query.message || 'Challenge is ready!';
+	notif.createNotification({
+		contents: {
+			contents: message
+		},
+		included_segments: ["Active Users", "Inactive Users"]
+	})
+	res.json('ok');
 })
 
 router.get('/myPending', auth.privated, (req, res) => {
