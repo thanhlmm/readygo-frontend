@@ -14,6 +14,8 @@ module.exports = new CronJob('*/1 * * * *', function() {
       challenges.forEach(challenge => {
         if (challenge.total_member === challenge.require_user) {
           // READY
+          console.log(challenge.name)
+          console.log('Change from NEW to READY')
           knex.table('challenges')
             .where({ id: challenge.id })
             .update({ status: config.READY })
@@ -58,6 +60,7 @@ module.exports = new CronJob('*/1 * * * *', function() {
       console.log(challenges)
       // Todo: Send notification that challenge fail
       challenges && challenges.forEach(challenge => {
+        console.log('change from NEW TO FAIL');
         knex.table('challengesacceptant')
         .select('oneSignal')
         .join('users', 'users.id', 'challengesacceptant.user_id')
@@ -90,6 +93,8 @@ module.exports = new CronJob('*/1 * * * *', function() {
     .then(challenges => {
       challenges && challenges.forEach(challenge => {
         if (challenge.total_member === challenge.require_user) {
+          console.log(challenge.name)
+          console.log('Change from READY to SUCCESS')
           // SUCCESS
           Promise.all([
             knex.table('challenges')
@@ -123,6 +128,8 @@ module.exports = new CronJob('*/1 * * * *', function() {
           })
 
         } else {
+          console.log(challenge.name)
+          console.log('Change from READY to FAIL')
           // FAIL
           knex.table('challenges')
             .where({ id: challenge.id })

@@ -21,17 +21,17 @@ router.post('/', auth.privated, (req, res) => {
   const newInvitation = req.body;
   newInvitation.user_id = user.id;
 
-  let phone = req.body.phone;
-  if (phone[0] === 0) {
-    phone = '+84' + phone.substring(1, phone.length)
-  }
-  // Todo: add SMS send here
-  nexmo.message.sendSms('NEXMO', phone, 'You has been invited to 1 challenge. Open app to see it!', {}, (err, data) => {
-    console.log('sms');
-    console.log(err);
-    console.log(data);
-    // res.json({ ok: 'ok' })
-  })
+  // let phone = req.body.phone;
+  // if (phone[0] === 0) {
+  //   phone = '+84' + phone.substring(1, phone.length)
+  // }
+  // // Todo: add SMS send here
+  // nexmo.message.sendSms('NEXMO', phone, 'You has been invited to 1 challenge. Open app to see it!', {}, (err, data) => {
+  //   console.log('sms');
+  //   console.log(err);
+  //   console.log(data);
+  //   // res.json({ ok: 'ok' })
+  // })
 
   knex.table('invitations')
     .insert(newInvitation)
